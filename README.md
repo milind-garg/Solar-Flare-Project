@@ -1,6 +1,6 @@
 # Solar Flare Nowcasting & Forecasting — Aditya-L1
 
-> **ISRO Problem Statement 15 — Aditya-L1**  
+> **Aditya-L1 Solar Flare Observatory**  
 > Real-time solar flare detection (*nowcasting*) and ~30-minute advance prediction (*forecasting*) from India's Aditya-L1 X-ray instruments (SoLEXS & HEL1OS), enhanced with transfer learning from NOAA GOES-16.
 
 ---
@@ -11,8 +11,8 @@ This repository provides an end-to-end space-weather pipeline and operations das
 
 | System | Purpose | Method | Machine Learning? |
 | :--- | :--- | :--- | :--- |
-| **Nowcasting** | Detects flare onset, peak, end, and class (A/B/C/M/X) in real-time light curves | Statistical thresholding (`excess > N·MAD_noise` + rise-rate guard) | ❌ Pure Signal Processing |
-| **Forecasting** | Predicts probability of flare peaking in the next 30 min from 60 min history | 1D-CNN + 2-layer LSTM deep neural net | ✅ Supervised ML (PyTorch) |
+| **Nowcasting** | Detects flare onset, peak, end, and class (A/B/C/M/X) in real-time light curves | Statistical thresholding (`excess > N·MAD_noise` + rise-rate guard) | Pure Signal Processing |
+| **Forecasting** | Predicts probability of flare peaking in the next 30 min from 60 min history | 1D-CNN + 2-layer LSTM deep neural net | Supervised ML (PyTorch) |
 | **Dashboard** | Operations UI with live curves, alerts, catalogs, and probability traces | Dash by Plotly | — |
 
 ---
@@ -74,7 +74,7 @@ master_catalog.parquet (Flare event list) ───► models/cnn_lstm_best.pt
 ### 1. Environment Setup
 ```bash
 # Clone the repository
-git clone <YOUR_REPO_URL>
+git clone https://github.com/milind-garg/Solar-Flare-Project
 cd "Solar Flare Project"
 
 # Create and activate virtual environment

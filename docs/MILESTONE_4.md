@@ -5,7 +5,7 @@
 
 ---
 
-> **GitHub Repository:** `<!-- INSERT GITHUB LINK HERE -->`
+> **GitHub Repository:** `https://github.com/milind-garg/Solar-Flare-Project`
 >
 > **Dashboard Demo:** Live at `http://127.0.0.1:8050` · Dashboard at `http://127.0.0.1:8050/dashboard/`
 
