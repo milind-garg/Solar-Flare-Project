@@ -1,0 +1,70 @@
+# ── Python compiled files ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+
+# ── Testing & coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Jupyter Notebooks ──────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ── IDE and OS files ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Environment / secrets ──────────────────────────────────────────────────────
+.env
+.env.local
+
+# ── Temporary files and logs ───────────────────────────────────────────────────
+*.log
+*.log.*
+*.err
+scratch/
+
+# ── Large datasets & raw space data (~12 GB total) ─────────────────────────────
+# NOTE: .gitkeep negation (e.g. !data/raw/goes/.gitkeep) does NOT work when
+# the parent directory (data/raw/) is already excluded — Git cannot un-ignore
+# files inside an already-ignored directory. Use specific sub-path ignores instead.
+
+# GOES-16 NetCDF4 files (~2 GB, 1922 files)
+data/raw/goes/*.nc
+data/raw/goes/download.log
+
+# Aditya-L1 raw FITS ZIPs (SoLEXS and HEL1OS, ~10+ GB)
+data/raw/aditya_l1/
+
+# Processed per-day Parquet files (~1 MB each × 1600+ files)
+# Master catalog IS committed (small, required for dashboard cold-start)
+data/processed/*.parquet
+!data/processed/master_catalog.parquet
+
+# ── Model checkpoints ─────────────────────────────────────────────────────────
+# The best checkpoint is small (0.92 MB) and IS committed so reviewers
+# can run the dashboard without retraining.
+# Exclude any intermediate / experimental checkpoints.
+models/checkpoint_epoch_*.pt
+models/pretrain_*.pt
+models/finetune_*.pt
+models/tmp_*.pt
+
+# ── Keep directory skeleton (for clone reproducibility) ────────────────────────
+!.gitkeep

@@ -1,0 +1,43 @@
+nowcasting:
+  sigma_threshold: 3.0        # excess must exceed N * background_noise
+  min_consecutive_samples: 5  # sustained trigger for K samples before declaring flare
+  rise_rate_threshold: 1.0e-9 # W/m²/s  — minimum dF/dt to reject slow drifts
+  suppression_window_min: 15  # merge detections within this window (keep peak)
+  background_window_min: 60   # rolling window for 60th-percentile background
+  end_factor: 1.5             # flare ends when flux <= end_factor * background
+
+calibration:
+  # SoLEXS long-channel counts/s → GOES-equivalent 1–8 Å flux (W/m²).
+  # Fitted via median-ratio linear regression across 435 matched GOES/SoLEXS
+  # flare-peak pairs (see scripts/calibrate_solexs.py). Only affects
+  # flare-class labelling (A/B/C/M/X), not detection SNR.
+  # Single scalar knob; upgrade to energy-resolved calibration from the .pi
+  # spectra if per-class accuracy demands it.
+  solexs_counts_to_wm2: 1.806e-08
+
+# GOES-equivalent flux boundaries for SoLEXS 1-8 Å channel (W/m²)
+flare_classes:
+  A: 1.0e-8
+  B: 1.0e-7
+  C: 1.0e-6
+  M: 1.0e-5
+  X: 1.0e-4
+
+forecasting:
+  input_window_min: 60   # minutes of history fed to model
+  lead_time_min: 30      # predict flare occurrence within next N minutes
+  alert_threshold: 0.5   # P > this → issue alert
+  model_features: 8      # number of input features per timestep (7 + qpp_power)
+  n_classes: 5           # 0 = binary P(flare) only; set 5 to also predict A/B/C/M/X intensity
+
+paths:
+  raw_data: data/raw/
+  processed_data: data/processed/
+  model_checkpoint: models/cnn_lstm_best.pt
+  master_catalog: data/processed/master_catalog.parquet
+
+goes:
+  # NOAA SWPC GOES-16 XRS 1-min data base URL
+  base_url: "https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/goes16/l2/data/xrsf-l2-avg1m_science/"
+  # GOES flare event list (for labeling)
+  event_list_url: "https://www.ngdc.noaa.gov/stp/space-weather/solar-data/solar-features/solar-flares/x-rays/goes/xrs/"
