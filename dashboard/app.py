@@ -76,52 +76,58 @@ def _get_model():
 
 
 # ── Design tokens ─────────────────────────────────────────────────────────────
-# Aerospace Slate Design System (Grafana / Datadog Space / NASA telemetry aesthetic)
+# Observatory Field Log System (calm, precise, readable, grounded in real data)
 
-BG      = "#0b0f19"          # deep aerospace slate base
-BG2     = "#0e1422"          # chart plot canvas & header base
-CARD    = "#111827"          # clean charcoal slate card container
-CARD2   = "#1f2937"          # elevated surface & hover state
-BORDER  = "#1f2937"          # subtle 1px slate divider
-BORDER2 = "#283548"          # lighter structural border
-FG      = "#f9fafb"          # primary text — crisp off-white
-FG2     = "#9ca3af"          # secondary text — neutral cool slate
-DIM     = "#6b7280"          # muted captions & inactive labels
-BLUE    = "#3b82f6"          # operational blue accent
-CYAN    = "#38bdf8"          # SXR cyan highlight
-AMBER   = "#f59e0b"          # solar thermal amber
-ORANGE  = "#f97316"          # warning orange
-VIOLET  = "#a855f7"          # HXR violet accent
-GREEN   = "#10b981"          # normal / nominal green
-RED     = "#ef4444"          # severe alert red
+BG      = "#101820"          # deep ink base
+BG2     = "#17232B"          # chart plot canvas & raised surface
+CARD    = "#17232B"          # panel container
+CARD2   = "#1e2e38"          # elevated surface / hover
+BORDER  = "#23333F"          # hairline 1px divider
+BORDER2 = "#2d404e"          # subtle structural border
+FG      = "#F1F0E8"          # warm near-white primary text
+FG2     = "#A7B0B2"          # secondary slate text
+DIM     = "#78858A"          # muted captions & inactive labels
+
+# Restrained scientific instrument colors
+OCHRE   = "#E3A64B"          # solar ochre (flare & solar emphasis)
+SXR_BLUE= "#79B8C8"          # pale blue for SXR (1-8 Å)
+HXR_VIO = "#B29AE0"          # violet for HXR (10-160 keV)
+GREEN   = "#4EAD76"          # confirmed healthy / nominal
+RED     = "#E05252"          # critical alert red
+BLUE    = "#79B8C8"
+CYAN    = "#79B8C8"
+AMBER   = "#E3A64B"
+ORANGE  = "#E3A64B"
+VIOLET  = "#B29AE0"
 
 FLARE_COLORS = {
-    "X": "#ef4444", "M": "#f59e0b", "C": "#eab308",
-    "B": "#10b981", "A": "#38bdf8", "HXR": "#a855f7",
+    "X": "#E05252", "M": "#E3A64B", "C": "#D4A373",
+    "B": "#4EAD76", "A": "#79B8C8", "HXR": "#B29AE0",
 }
 
-FONT_SERIF = "'Anthropic Serif', 'Tiempos Text', 'Copernicus', 'Newsreader', 'Lora', Georgia, serif"
-FONT_MONO  = "'Anthropic Mono', 'DM Mono', monospace"
+FONT_SANS = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+FONT_MONO = "'JetBrains Mono', 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace"
+FONT_SERIF = FONT_SANS       # for backwards-compatibility alias
 
 _GRAPH_LAYOUT = dict(
     template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="#0e1422",
-    font=dict(size=12, family=f"{FONT_SERIF}, {FONT_MONO}", color=FG2),
+    paper_bgcolor="#101820",
+    plot_bgcolor="#17232B",
+    font=dict(size=12, family=FONT_SANS, color=FG2),
     margin=dict(l=62, r=20, t=44, b=44),
     legend=dict(
-        orientation="h", y=1.14, font=dict(size=11, color=FG2, family=FONT_SERIF),
+        orientation="h", y=1.14, font=dict(size=11, color=FG2, family=FONT_SANS),
         bgcolor="rgba(0,0,0,0)", borderwidth=0,
     ),
     xaxis=dict(
-        showgrid=True, gridcolor="#1b2537", zeroline=False,
-        tickfont=dict(size=11, color="#9ca3af", family=FONT_MONO), linecolor=BORDER2,
+        showgrid=True, gridcolor="#1b2832", zeroline=False,
+        tickfont=dict(size=11, color=FG2, family=FONT_MONO), linecolor=BORDER,
     ),
     yaxis=dict(
-        showgrid=True, gridcolor="#1b2537", zeroline=False,
-        tickfont=dict(size=11, color="#9ca3af", family=FONT_MONO), linecolor=BORDER2,
+        showgrid=True, gridcolor="#1b2832", zeroline=False,
+        tickfont=dict(size=11, color=FG2, family=FONT_MONO), linecolor=BORDER,
     ),
-    title_font=dict(size=13, color=FG, family=FONT_SERIF),
+    title_font=dict(size=13, color=FG, family=FONT_SANS),
 )
 
 
@@ -132,24 +138,23 @@ def _flare_color(cls: str) -> str:
 def _card(*children, **extra_style):
     style = {
         "background": CARD,
-        "borderRadius": "10px",
-        "padding": "18px 22px",
-        "marginBottom": "14px",
-        "border": f"1px solid {BORDER2}",
-        "boxShadow": "0 4px 16px rgba(0,0,0,0.25)",
+        "borderRadius": "3px",
+        "padding": "16px 20px",
+        "marginBottom": "12px",
+        "border": f"1px solid {BORDER}",
         **extra_style,
     }
     return html.Div(children, style=style)
 
 
 def _kpi(label_text: str, value, color: str = BLUE, sub: str = ""):
-    """Modern aerospace KPI metric tile with clean typography."""
+    """Observatory field log KPI metric tile with tabular mono typography."""
     return html.Div([
         html.Div(
             label_text.upper(),
-            style={"color": FG2, "fontSize": "10px", "letterSpacing": "0.08em",
+            style={"color": DIM, "fontSize": "10px", "letterSpacing": "0.08em",
                    "fontWeight": "600", "marginBottom": "6px",
-                   "fontFamily": FONT_SERIF},
+                   "fontFamily": FONT_SANS},
         ),
         html.Div(
             str(value),
@@ -158,18 +163,18 @@ def _kpi(label_text: str, value, color: str = BLUE, sub: str = ""):
         ),
         html.Div(
             sub,
-            style={"color": DIM, "fontSize": "11px", "fontWeight": "500",
-                   "marginTop": "4px", "fontFamily": FONT_SERIF}
+            style={"color": FG2, "fontSize": "11px", "fontWeight": "400",
+                   "marginTop": "4px", "fontFamily": FONT_SANS}
         ) if sub else html.Div(),
     ], style={
-        "background": "#111827",
-        "borderRadius": "8px",
-        "padding": "14px 18px",
-        "border": f"1px solid {BORDER2}",
+        "background": CARD,
+        "borderRadius": "3px",
+        "padding": "12px 16px",
+        "border": f"1px solid {BORDER}",
         "display": "inline-block",
         "minWidth": "140px",
-        "marginRight": "12px",
-        "marginBottom": "12px",
+        "marginRight": "10px",
+        "marginBottom": "10px",
         "verticalAlign": "top",
     })
 
@@ -180,7 +185,7 @@ def _fig_sxr(sxr_df: pd.DataFrame, events_df: pd.DataFrame | None, instrument: s
     fig = go.Figure()
     flux = sxr_df["flux_long"].resample("1min").mean().dropna()
     fig.add_trace(go.Scatter(x=flux.index, y=flux.values, name="SXR 1–8 Å (Long Channel)",
-                             line=dict(color=BLUE, width=1.5)))
+                             line=dict(color=SXR_BLUE, width=1.5)))
     if "bg_long" in sxr_df.columns:
         bg = sxr_df["bg_long"].resample("1min").mean().dropna()
         fig.add_trace(go.Scatter(x=bg.index, y=bg.values, name="Quiet-Sun Background (60m rolling 60th percentile)",
@@ -189,10 +194,10 @@ def _fig_sxr(sxr_df: pd.DataFrame, events_df: pd.DataFrame | None, instrument: s
     # Scale factor for NOAA R-scale space weather threshold lines
     scale = CFG.get("calibration", {}).get("solexs_counts_to_wm2", 1.806e-08) if instrument == "solexs" else 1.0
     thresh_levels = [
-        (1e-4 / scale, "X-Class · R3+ Strong Radio Blackout", "#ef4444"),
-        (1e-5 / scale, "M-Class · R1-R2 Moderate Blackout", "#f59e0b"),
-        (1e-6 / scale, "C-Class · Noticeable Coronal Activity", "#eab308"),
-        (1e-7 / scale, "B-Class · Baseline Flare Activity", "#10b981"),
+        (1e-4 / scale, "X-Class · R3+ Strong Radio Blackout", "#E05252"),
+        (1e-5 / scale, "M-Class · R1-R2 Moderate Blackout", "#E3A64B"),
+        (1e-6 / scale, "C-Class · Noticeable Coronal Activity", "#D4A373"),
+        (1e-7 / scale, "B-Class · Baseline Flare Activity", "#4EAD76"),
     ]
     flux_min = flux.min() if not flux.empty else 1.0
     for val, lbl, col in thresh_levels:
@@ -200,7 +205,7 @@ def _fig_sxr(sxr_df: pd.DataFrame, events_df: pd.DataFrame | None, instrument: s
             fig.add_hline(
                 y=val, line_color=col, line_dash="dash", line_width=1, opacity=0.55,
                 annotation_text=lbl, annotation_position="top right",
-                annotation_font=dict(size=9, color=col, family=FONT_SERIF),
+                annotation_font=dict(size=9, color=col, family=FONT_SANS),
             )
 
     # Detected events: shaded duration intervals and peak vertical markers with Neupert lag
@@ -224,7 +229,7 @@ def _fig_sxr(sxr_df: pd.DataFrame, events_df: pd.DataFrame | None, instrument: s
                 fig.add_vline(
                     x=pt.isoformat(), line_color=col, line_width=1.5, line_dash="dot",
                     annotation_text=lbl, annotation_position="top left",
-                    annotation_font=dict(color=col, size=10, family=FONT_SERIF),
+                    annotation_font=dict(color=col, size=10, family=FONT_SANS),
                 )
 
     y_unit = "Counts · s⁻¹" if instrument == "solexs" else "Flux (W · m⁻²)"
@@ -238,8 +243,8 @@ def _fig_hxr(hxr_df: pd.DataFrame, events_df: pd.DataFrame | None) -> go.Figure:
     fig = go.Figure()
     hxr = hxr_df["hxr_total"].resample("1min").mean().dropna()
     fig.add_trace(go.Scatter(x=hxr.index, y=hxr.values, name="HEL1OS Total HXR (10–160 keV)",
-                             line=dict(color="#c084fc", width=1.5),
-                             fill="tozeroy", fillcolor="rgba(192,132,252,0.06)"))
+                             line=dict(color=HXR_VIO, width=1.5),
+                             fill="tozeroy", fillcolor="rgba(178,154,224,0.06)"))
     if events_df is not None and not events_df.empty:
         for _, ev in events_df.iterrows():
             pt = ev.get("peak_time")
@@ -248,8 +253,8 @@ def _fig_hxr(hxr_df: pd.DataFrame, events_df: pd.DataFrame | None) -> go.Figure:
             fig.add_vline(x=pt.isoformat(), line_color=FLARE_COLORS["HXR"],
                           line_width=1.5, line_dash="dot",
                           annotation_text="HXR Impulsive Burst", annotation_position="top left",
-                          annotation_font=dict(color="#c084fc", size=10, family=FONT_SERIF))
-    fig.update_layout(title="Hard X-Ray Impulsive Count Rate (HEL1OS 10–160 keV — Non-Thermal Plasma)",
+                          annotation_font=dict(color=HXR_VIO, size=10, family=FONT_SANS))
+    fig.update_layout(title="Hard X-Ray Impulsive Count Rate (HEL1OS 10–160 keV — Non-Thermal Bremsstrahlung)",
                       yaxis_title="Counts · s⁻¹ (Livetime Corrected)", height=240, **_GRAPH_LAYOUT)
     return fig
 
@@ -261,8 +266,8 @@ def _fig_hardness(sxr_df: pd.DataFrame, hxr_df: pd.DataFrame) -> go.Figure:
     ratio = (ha / sa.replace(0, np.nan)).replace([np.inf, -np.inf], np.nan).dropna()
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=ratio.index, y=ratio.values, name="Spectral Hardness (HXR / SXR)",
-                             line=dict(color="#f59e0b", width=1.4),
-                             fill="tozeroy", fillcolor="rgba(245,158,11,0.08)"))
+                             line=dict(color=OCHRE, width=1.4),
+                             fill="tozeroy", fillcolor="rgba(227,166,75,0.08)"))
     fig.update_layout(title="Spectral Hardness Ratio (Non-Thermal HXR / Thermal SXR Precursor Index)",
                       yaxis_title="Hardness Ratio", height=200, **_GRAPH_LAYOUT)
     return fig
@@ -275,16 +280,16 @@ def _fig_probability(prob_s: pd.Series, threshold: float,
     y_clipped = p1.clip(upper=threshold)
     fig.add_trace(go.Scatter(
         x=p1.index, y=y_clipped.values,
-        line=dict(width=0), fill="tozeroy", fillcolor="rgba(245,158,11,0.10)",
+        line=dict(width=0), fill="tozeroy", fillcolor="rgba(227,166,75,0.08)",
         showlegend=False, hoverinfo="skip",
     ))
     fig.add_trace(go.Scatter(x=p1.index, y=p1.values, name="P(Flare in next 30 min)",
-                             line=dict(color=ORANGE, width=1.6),
-                             fill="tonexty", fillcolor="rgba(239,68,68,0.28)"))
-    fig.add_hline(y=threshold, line_color="#ffffff", line_dash="dash", line_width=1.1,
+                             line=dict(color=OCHRE, width=1.6),
+                             fill="tonexty", fillcolor="rgba(224,82,82,0.18)"))
+    fig.add_hline(y=threshold, line_color="#F1F0E8", line_dash="dash", line_width=1.1,
                   annotation_text=f"Operational Alert Threshold = {threshold:.2f}",
                   annotation_position="top right",
-                  annotation_font=dict(size=10, color="#ffffff", family=FONT_SERIF))
+                  annotation_font=dict(size=10, color="#F1F0E8", family=FONT_SANS))
     if events_df is not None and not events_df.empty:
         for _, ev in events_df.iterrows():
             cls = str(ev.get("flare_class") or "")
@@ -294,7 +299,7 @@ def _fig_probability(prob_s: pd.Series, threshold: float,
             fig.add_vline(x=pt.isoformat(), line_color=_flare_color(cls),
                           line_width=1.2, line_dash="dot",
                           annotation_text=f"Actual: {cls}", annotation_font_size=10,
-                          annotation_font=dict(color=_flare_color(cls), family=FONT_SERIF))
+                          annotation_font=dict(color=_flare_color(cls), family=FONT_SANS))
     fig.update_layout(title="Deep Neural Forecast Horizon — P(Flare in next 30 minutes)",
                       yaxis_title="P(Flare)", yaxis_range=[0, 1],
                       height=260, **_GRAPH_LAYOUT)
@@ -425,35 +430,35 @@ def serve_assets(filename):
 # @app.server.route("/download-catalog") with make_response() for proper headers.
 
 _CTRL_LABEL = {
-    "color": "#9ca3af", "fontSize": "10px", "letterSpacing": "0.08em",
+    "color": DIM, "fontSize": "10px", "letterSpacing": "0.08em",
     "fontWeight": "600", "marginBottom": "6px",
-    "textTransform": "uppercase", "fontFamily": FONT_SERIF,
+    "textTransform": "uppercase", "fontFamily": FONT_SANS,
 }
 
 _TAB_STYLE = {
     "background": "transparent",
-    "color": "#9ca3af",
+    "color": FG2,
     "border": "none",
     "borderBottom": "2px solid transparent",
-    "padding": "12px 24px",
+    "padding": "10px 20px",
     "fontSize": "13px",
     "fontWeight": "600",
-    "fontFamily": FONT_SERIF,
-    "letterSpacing": "0.02em",
+    "fontFamily": FONT_SANS,
+    "letterSpacing": "0.01em",
     "cursor": "pointer",
 }
 _TAB_SELECTED = {
     **_TAB_STYLE,
-    "color": "#ffffff",
-    "fontWeight": "700",
-    "borderBottom": f"2px solid {BLUE}",
-    "background": "rgba(59,130,246,0.08)",
+    "color": FG,
+    "fontWeight": "600",
+    "borderBottom": f"2px solid {OCHRE}",
+    "background": "rgba(227,166,75,0.06)",
 }
 
 # Google Fonts and CSS theme injection
 _FONT_LINK = html.Link(
     rel="stylesheet",
-    href="https://cdn.jsdelivr.net/npm/anthropic-fonts@1.1.0/cdn/v1/css/all.css",
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
 )
 _THEME_LINK = html.Link(
     rel="stylesheet",
@@ -466,218 +471,12 @@ app.index_string = """<!DOCTYPE html>
         {%metas%}
         <title>{%title%}</title>
         {%favicon%}
-                <link rel="preconnect" href="https://cdn.jsdelivr.net">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/anthropic-fonts@1.1.0/cdn/v1/css/all.css">
-        <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/dashboard/assets/theme.css">
         <link rel="stylesheet" href="/assets/theme.css">
         {%css%}
-        <style>
-        :root {
-            /* Modern Dash Component Theme Variables */
-            --Dash-Fill-Inverse-Strong: #111827 !important;
-            --Dash-Fill-Inverse-strong: #111827 !important;
-            --Dash-Text-Strong: #f9fafb !important;
-            --Dash-Text-Primary: #f9fafb !important;
-            --Dash-Text-Weak: #9ca3af !important;
-            --Dash-Text-Disabled: #6b7280 !important;
-            --Dash-Stroke-Strong: #283548 !important;
-            --Dash-Stroke-Weak: #1f2937 !important;
-            --Dash-Fill-Interactive-Weak: #1f2937 !important;
-            --Dash-Fill-Interactive-Strong: #3b82f6 !important;
-            --Dash-Fill-Disabled: #1f2937 !important;
-            --Dash-Shading-Weak: rgba(0, 0, 0, 0.4) !important;
-            --Dash-Shading-Strong: rgba(0, 0, 0, 0.8) !important;
-            --Dash-Border-Radius: 8px !important;
-            --Dash-Spacing: 4px !important;
-            --font-serif: 'Anthropic Serif', 'Tiempos Text', 'Copernicus', 'Newsreader', 'Lora', Georgia, serif;
-            --font-mono: 'Anthropic Mono', 'DM Mono', monospace;
-        }
-
-        /* Modern Dash Dropdown */
-        .dash-dropdown,
-        .dash-dropdown-wrapper,
-        .dash-dropdown-content,
-        .dash-dropdown-trigger,
-        .dash-dropdown-grid-container {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            border-color: #283548 !important;
-            color: #f9fafb !important;
-            border-radius: 8px !important;
-            font-family: var(--font-serif) !important;
-        }
-        .dash-dropdown-trigger {
-            min-height: 38px !important;
-            height: 38px !important;
-        }
-        .dash-dropdown-value,
-        .dash-dropdown-value > *,
-        .dash-dropdown-value-item,
-        .dash-dropdown-placeholder,
-        .dash-dropdown-search {
-            color: #f9fafb !important;
-            font-family: var(--font-serif) !important;
-        }
-        .dash-dropdown-placeholder {
-            color: #6b7280 !important;
-        }
-        .dash-dropdown-trigger-icon,
-        .dash-dropdown-search-icon,
-        .dash-dropdown-clear,
-        .dash-dropdown-value-count {
-            color: #9ca3af !important;
-            fill: #9ca3af !important;
-        }
-        .dash-dropdown-content {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            border: 1px solid #283548 !important;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8) !important;
-            border-radius: 8px !important;
-        }
-        .dash-dropdown-options {
-            background-color: #111827 !important;
-        }
-        .dash-dropdown-option,
-        .dash-options-list-option {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            color: #e5e7eb !important;
-            font-family: var(--font-serif) !important;
-            border-bottom: 1px solid #1f2937 !important;
-            padding: 8px 12px !important;
-        }
-        .dash-options-list-option-text {
-            color: #e5e7eb !important;
-        }
-        .dash-dropdown-option:hover,
-        .dash-dropdown-option:focus,
-        .dash-options-list-option:hover,
-        .dash-options-list-option:focus-within {
-            background-color: #1f2937 !important;
-            background: #1f2937 !important;
-            color: #38bdf8 !important;
-        }
-
-        /* Modern Dash DatePicker */
-        .dash-datepicker,
-        .dash-datepicker-input-wrapper {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            border: 1px solid #283548 !important;
-            border-radius: 8px !important;
-            color: #f9fafb !important;
-            height: 38px !important;
-            box-sizing: border-box !important;
-        }
-        .dash-datepicker-input {
-            background-color: transparent !important;
-            background: transparent !important;
-            color: #f9fafb !important;
-            font-family: var(--font-mono) !important;
-            font-size: 13px !important;
-            font-weight: 500 !important;
-        }
-        .dash-datepicker-caret-icon,
-        .dash-datepicker-clear {
-            color: #9ca3af !important;
-            fill: #9ca3af !important;
-        }
-        .dash-datepicker-calendar-container,
-        .dash-datepicker-calendar-wrapper,
-        .dash-datepicker-content {
-            background-color: #0e1422 !important;
-            background: #0e1422 !important;
-            border: 1px solid #283548 !important;
-            border-radius: 10px !important;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8) !important;
-        }
-        .dash-datepicker-calendar {
-            background-color: #0e1422 !important;
-        }
-        .dash-datepicker-calendar th {
-            color: #9ca3af !important;
-            font-family: var(--font-serif) !important;
-            font-weight: 600 !important;
-        }
-        .dash-datepicker-calendar td {
-            background-color: #111827 !important;
-            color: #e5e7eb !important;
-            border: 1px solid #1f2937 !important;
-            font-family: var(--font-mono) !important;
-            border-radius: 4px !important;
-        }
-        .dash-datepicker-calendar td:hover {
-            background-color: #1f2937 !important;
-            color: #38bdf8 !important;
-        }
-        .dash-datepicker-calendar td.dash-datepicker-calendar-date-selected {
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
-            font-weight: 700 !important;
-        }
-        .dash-datepicker-month-nav {
-            color: #9ca3af !important;
-            background: #111827 !important;
-            border: 1px solid #283548 !important;
-            border-radius: 6px !important;
-        }
-        .dash-datepicker-month-nav:hover:not(:disabled) {
-            background: #1f2937 !important;
-            color: #38bdf8 !important;
-        }
-
-        /* Legacy react-dates & react-select Fallbacks */
-        .SingleDatePickerInput, .SingleDatePickerInput__withBorder {
-            background-color: #111827 !important;
-            border: 1px solid #283548 !important;
-            border-radius: 8px !important;
-        }
-        .DateInput, .DateInput_input {
-            background-color: transparent !important;
-            color: #f9fafb !important;
-            font-family: var(--font-mono) !important;
-            border: none !important;
-        }
-        .Select-control {
-            background-color: #111827 !important;
-            border: 1px solid #283548 !important;
-            border-radius: 8px !important;
-            color: #f9fafb !important;
-        }
-        .Select-value, .Select-value-label, .Select--single > .Select-control .Select-value .Select-value-label {
-            color: #f9fafb !important;
-            font-family: var(--font-serif) !important;
-        }
-        .Select-placeholder {
-            color: #6b7280 !important;
-            font-family: var(--font-serif) !important;
-        }
-        .Select-input > input {
-            color: #f9fafb !important;
-            font-family: var(--font-serif) !important;
-        }
-        .Select-menu-outer {
-            background-color: #111827 !important;
-            border: 1px solid #283548 !important;
-        }
-        .Select-option {
-            background-color: #111827 !important;
-            color: #d1d5db !important;
-        }
-        .Select-option.is-focused {
-            background-color: #1f2937 !important;
-            color: #f9fafb !important;
-        }
-        .rc-slider-tooltip-inner {
-            background-color: #111827 !important;
-            color: #f9fafb !important;
-            border: 1px solid #283548 !important;
-        }
-        </style>
     </head>
     <body>
         <!--[if IE]><script>
@@ -701,59 +500,69 @@ app.layout = html.Div([
 
     # ── Header ────────────────────────────────────────────────────────────────
     html.Div([
-        # Left: brand
+        # Left: brand & mission identity
         html.Div([
             html.Img(src="/assets/logo.png", style={
-                "height": "36px", "width": "36px", "borderRadius": "50%",
-                "marginRight": "14px", "verticalAlign": "middle",
-                "boxShadow": "0 0 16px rgba(245,158,11,0.45)",
-                "border": "1.5px solid rgba(245,158,11,0.5)",
+                "height": "32px", "width": "32px", "borderRadius": "3px",
+                "marginRight": "12px", "verticalAlign": "middle",
+                "border": f"1px solid {BORDER}",
             }),
             html.Div([
                 html.Div(
                     "Aditya-L1 Solar Flare Observatory",
-                    style={"fontSize": "1.15em", "fontWeight": "700", "color": FG,
-                           "letterSpacing": "-0.01em",
-                           "fontFamily": FONT_SERIF},
+                    style={"fontSize": "1.15em", "fontWeight": "600", "color": FG,
+                           "letterSpacing": "-0.01em", "fontFamily": FONT_SANS},
                 ),
                 html.Div(
-                    "ISRO PS-15 · SoLEXS (SXR) + HEL1OS (HXR) Space Weather Console",
-                    style={"fontSize": "11px", "color": "#9ca3af",
-                           "fontWeight": "500", "fontFamily": FONT_MONO,
-                           "letterSpacing": "0.04em"},
+                    "ISRO PS-15 · SoLEXS (SXR 1–8 Å) + HEL1OS (HXR 10–160 keV) Science Operations Console",
+                    style={"fontSize": "11px", "color": DIM,
+                           "fontWeight": "400", "fontFamily": FONT_MONO,
+                           "letterSpacing": "0.02em"},
                 ),
             ]),
         ], style={"display": "flex", "alignItems": "center"}),
 
-        # Right: nav pills
+        # Right: plain-language data/model/feed status badges & navigation
         html.Div([
-            html.A("← Observatory Home", href="/", style={
-                "color": AMBER, "fontSize": "12px", "fontWeight": "600",
-                "background": "rgba(245,158,11,0.08)",
-                "border": "1px solid rgba(245,158,11,0.3)",
-                "borderRadius": "6px",
-                "padding": "6px 14px", "marginRight": "10px",
+            html.Span([
+                html.Span("DATA: ", style={"color": DIM}),
+                html.Span("Archive Parquet", style={"color": FG2, "fontWeight": "600"}),
+            ], style={
+                "fontSize": "11px", "fontFamily": FONT_MONO, "border": f"1px solid {BORDER}",
+                "borderRadius": "3px", "padding": "4px 8px", "marginRight": "8px", "background": CARD,
+            }),
+            html.Span([
+                html.Span("MODEL: ", style={"color": DIM}),
+                html.Span("CNN-LSTM (0.813 AUC)", style={"color": FG2, "fontWeight": "600"}),
+            ], style={
+                "fontSize": "11px", "fontFamily": FONT_MONO, "border": f"1px solid {BORDER}",
+                "borderRadius": "3px", "padding": "4px 8px", "marginRight": "8px", "background": CARD,
+            }),
+            html.Span([
+                html.Span("FEED: ", style={"color": DIM}),
+                html.Span("Static Analysis Mode", style={"color": SXR_BLUE, "fontWeight": "600"}),
+            ], style={
+                "fontSize": "11px", "fontFamily": FONT_MONO, "border": f"1px solid {BORDER}",
+                "borderRadius": "3px", "padding": "4px 8px", "marginRight": "12px", "background": CARD,
+            }),
+            html.A("← Field Log Home", href="/", style={
+                "color": OCHRE, "fontSize": "12px", "fontWeight": "600",
+                "background": "transparent",
+                "border": f"1px solid {BORDER}",
+                "borderRadius": "3px",
+                "padding": "5px 12px",
                 "textDecoration": "none",
-                "fontFamily": FONT_SERIF,
-                "letterSpacing": "0.02em",
+                "fontFamily": FONT_SANS,
             }),
-            html.Span("L1 HALO ORBIT · 1.5M KM", style={
-                "color": CYAN, "fontSize": "11px", "fontWeight": "600",
-                "background": "rgba(56,189,248,0.08)",
-                "border": "1px solid rgba(56,189,248,0.25)",
-                "borderRadius": "6px", "padding": "5px 12px",
-                "fontFamily": FONT_SERIF,
-                "letterSpacing": "0.06em",
-            }),
-        ], style={"display": "flex", "alignItems": "center"}),
+        ], style={"display": "flex", "alignItems": "center", "flexWrap": "wrap", "gap": "4px"}),
     ], style={
         "display": "flex", "justifyContent": "space-between", "alignItems": "center",
-        "background": "#0b0f19",
-        "padding": "14px 28px",
-        "borderBottom": f"1px solid {BORDER2}",
+        "background": BG,
+        "padding": "12px 24px",
+        "borderBottom": f"1px solid {BORDER}",
     }),
 
-    # ── Controls bar ──────────────────────────────────────────────────────────
+    # ── Controls toolbar ──────────────────────────────────────────────────────
     html.Div([
         # Curated Benchmark Flare Presets
         html.Div([
@@ -769,10 +578,10 @@ app.layout = html.Div([
                     {"label": "2024-04-01 — Quiet-Sun Baseline Observation", "value": "2024-04-01:solexs"},
                 ],
                 value="", clearable=True,
-                style={"width": "280px", "backgroundColor": "#111827",
-                       "color": FG, "fontSize": "13px", "borderRadius": "8px"},
+                style={"width": "280px", "backgroundColor": CARD,
+                       "color": FG, "fontSize": "13px", "borderRadius": "3px"},
             ),
-        ], style={"marginRight": "20px"}),
+        ], style={"marginRight": "16px"}),
 
         # Date
         html.Div([
@@ -783,7 +592,7 @@ app.layout = html.Div([
                 display_format="YYYY-MM-DD",
                 style={"fontSize": "13px"},
             ),
-        ], style={"marginRight": "20px"}),
+        ], style={"marginRight": "16px"}),
 
         # Instrument
         html.Div([
@@ -795,31 +604,31 @@ app.layout = html.Div([
                     {"label": "GOES-16 XRS Benchmark", "value": "goes"},
                 ],
                 value="solexs", clearable=False,
-                style={"width": "210px", "backgroundColor": "#111827",
-                       "color": FG, "fontSize": "13px", "borderRadius": "8px"},
+                style={"width": "200px", "backgroundColor": CARD,
+                       "color": FG, "fontSize": "13px", "borderRadius": "3px"},
             ),
-        ], style={"marginRight": "20px"}),
+        ], style={"marginRight": "16px"}),
 
         # Alert threshold
         html.Div([
-            html.Div("Alert Threshold", style=_CTRL_LABEL),
+            html.Div("Alert Threshold (τ)", style=_CTRL_LABEL),
             html.Div([
                 dcc.Slider(
                     id="threshold-slider",
                     min=0.1, max=0.9, step=0.05,
                     value=float(CFG["forecasting"]["alert_threshold"]),
-                    marks={0.3: {"label": "0.3", "style": {"color": "#9ca3af", "fontSize": "11px", "fontWeight": "500"}},
-                            0.5: {"label": "0.5", "style": {"color": "#9ca3af", "fontSize": "11px", "fontWeight": "500"}},
-                            0.7: {"label": "0.7", "style": {"color": "#9ca3af", "fontSize": "11px", "fontWeight": "500"}}},
+                    marks={0.3: {"label": "0.3", "style": {"color": DIM, "fontSize": "10px", "fontWeight": "500", "fontFamily": FONT_MONO}},
+                            0.5: {"label": "0.5", "style": {"color": DIM, "fontSize": "10px", "fontWeight": "500", "fontFamily": FONT_MONO}},
+                            0.7: {"label": "0.7", "style": {"color": DIM, "fontSize": "10px", "fontWeight": "500", "fontFamily": FONT_MONO}}},
                     tooltip={"placement": "bottom", "always_visible": False},
                     updatemode="drag",
                 ),
-            ], style={"width": "180px", "paddingTop": "2px"}),
-        ], style={"marginRight": "20px"}),
+            ], style={"width": "160px", "paddingTop": "2px"}),
+        ], style={"marginRight": "16px"}),
 
         # Options
         html.Div([
-            html.Div("Analytics Options", style=_CTRL_LABEL),
+            html.Div("Analysis Mode", style=_CTRL_LABEL),
             dcc.Checklist(
                 id="options-check",
                 options=[
@@ -828,64 +637,63 @@ app.layout = html.Div([
                 ],
                 value=["forecast"],
                 inline=True,
-                labelStyle={"marginRight": "16px", "fontSize": "13px", "fontWeight": "600",
-                             "color": FG2, "fontFamily": FONT_SERIF},
+                labelStyle={"marginRight": "14px", "fontSize": "13px", "fontWeight": "500",
+                             "color": FG2, "fontFamily": FONT_SANS},
             ),
-        ], style={"marginRight": "20px"}),
+        ], style={"marginRight": "16px"}),
 
         # Load button
         html.Button(
-            "Load Telemetry",
+            "Load Telemetry Pass",
             id="load-btn", n_clicks=0,
             style={
-                "background": "#1e293b",
+                "background": "#1e2e38",
                 "color": FG, "border": f"1px solid {BORDER2}",
-                "borderRadius": "8px", "padding": "8px 20px",
+                "borderRadius": "3px", "padding": "8px 18px",
                 "cursor": "pointer", "fontSize": "13px",
                 "fontWeight": "600", "marginTop": "18px",
-                "fontFamily": FONT_SERIF,
-                "letterSpacing": "0.03em",
+                "fontFamily": FONT_SANS,
             },
         ),
     ], style={
         "display": "flex", "flexWrap": "wrap", "alignItems": "flex-end",
-        "background": "#0e1422",
-        "padding": "14px 28px",
+        "background": CARD,
+        "padding": "12px 24px",
         "borderBottom": f"1px solid {BORDER}",
         "gap": "6px",
     }),
 
     # ── Alert banners ─────────────────────────────────────────────────────────
-    html.Div(id="alert-banners", style={"padding": "10px 28px 0"}),
+    html.Div(id="alert-banners", style={"padding": "10px 24px 0"}),
 
     # ── Status bar ────────────────────────────────────────────────────────────
     html.Div(
         id="status-bar",
-        style={"padding": "7px 28px", "color": "#9bb8f8", "fontSize": "12px",
-               "fontWeight": "600", "fontFamily": FONT_MONO,
-               "letterSpacing": "0.02em", "minHeight": "28px"},
+        style={"padding": "6px 24px", "color": FG2, "fontSize": "12px",
+               "fontWeight": "500", "fontFamily": FONT_MONO,
+               "letterSpacing": "0.01em", "minHeight": "26px"},
     ),
 
     # ── Tabs ──────────────────────────────────────────────────────────────────
     html.Div([
         dcc.Tabs(id="main-tabs", value="curves", children=[
-            dcc.Tab(label="Light Curves & Telemetry", value="curves",
+            dcc.Tab(label="Light Curves & Observations", value="curves",
                     style=_TAB_STYLE, selected_style=_TAB_SELECTED),
-            dcc.Tab(label="Predictive ML Forecast",    value="forecast",
+            dcc.Tab(label="Predictive Neural Forecast",    value="forecast",
                     style=_TAB_STYLE, selected_style=_TAB_SELECTED),
-            dcc.Tab(label="Master Event Catalog",     value="catalog",
+            dcc.Tab(label="Master Flare Catalog",         value="catalog",
                     style=_TAB_STYLE, selected_style=_TAB_SELECTED),
         ]),
     ], style={
-        "padding": "0 28px",
-        "background": BG2,
-        "borderBottom": f"1px solid {BORDER2}",
+        "padding": "0 24px",
+        "background": BG,
+        "borderBottom": f"1px solid {BORDER}",
     }),
 
     dcc.Loading(
-        html.Div(id="tab-content", style={"padding": "18px 28px 36px"}),
+        html.Div(id="tab-content", style={"padding": "16px 24px 32px"}),
         type="dot",
-        color=CYAN,
+        color=SXR_BLUE,
     ),
 
     # ── Hidden stores & interval ──────────────────────────────────────────────
@@ -895,9 +703,9 @@ app.layout = html.Div([
 ], style={
     "background": BG,
     "minHeight": "100vh",
-    "fontFamily": FONT_SERIF,
+    "fontFamily": FONT_SANS,
     "color": FG,
-    "fontSize": "14px",
+    "fontSize": "13px",
 })
 
 
@@ -1104,28 +912,28 @@ def update_alerts(store, threshold):
         peak = str(ev.get("peak_time") or "")[:19]
         conf = ev.get("confirmed_multi_instrument", False)
         col  = _flare_color(cls)
-        tag  = "  ✓ multi-instrument confirmed" if conf else ""
+        tag  = "✓ multi-instrument confirmed" if conf else ""
         banners.append(html.Div(
-            [html.Span("🔔  FLARE NOWCASTED", style={"letterSpacing": "0.07em"}),
-             html.Span(f"  {cls}", style={"fontFamily": FONT_MONO,
-                                         "background": f"{col}25", "borderRadius": "4px",
-                                         "padding": "1px 7px", "marginLeft": "6px"}),
-             html.Span(f"  @  {peak} UTC", style={"fontFamily": FONT_MONO,
-                                                   "fontSize": "12px", "color": f"{col}cc"}),
-             html.Span(tag, style={"fontSize": "11px", "opacity": "0.7", "marginLeft": "8px"})],
+            [html.Span("NOWCAST DETECTED · ", style={"fontWeight": "700", "fontSize": "11px", "letterSpacing": "0.06em", "fontFamily": FONT_MONO}),
+             html.Span(f"{cls} FLARE", style={"fontFamily": FONT_MONO, "fontWeight": "700",
+                                              "background": f"{col}25", "borderRadius": "2px",
+                                              "padding": "2px 8px", "marginRight": "8px"}),
+             html.Span(f"Peak @ {peak} UTC", style={"fontFamily": FONT_MONO, "fontSize": "12px", "color": FG}),
+             html.Span(f" · {store.get('instrument', 'solexs').upper()} stream", style={"color": DIM, "fontSize": "11px", "fontFamily": FONT_MONO}),
+             html.Span(f"  ({tag})", style={"fontSize": "11px", "color": GREEN, "marginLeft": "8px", "fontFamily": FONT_MONO}) if conf else html.Span()],
             style={
-                "background": f"linear-gradient(90deg, {col}12 0%, transparent 100%)",
-                "border": f"1px solid {col}44",
-                "borderLeft": f"4px solid {col}",
+                "background": CARD,
+                "border": f"1px solid {BORDER}",
+                "borderLeft": f"3px solid {col}",
                 "color": col,
-                "borderRadius": "8px",
-                "padding": "9px 16px",
+                "borderRadius": "3px",
+                "padding": "8px 14px",
                 "marginBottom": "6px",
-                "fontWeight": "700",
                 "fontSize": "13px",
-                "fontFamily": FONT_SERIF,
+                "fontFamily": FONT_SANS,
                 "display": "flex",
                 "alignItems": "center",
+                "flexWrap": "wrap",
             }
         ))
 
@@ -1135,28 +943,27 @@ def update_alerts(store, threshold):
         if probs and probs[-1] >= threshold:
             lp = probs[-1]
             banners.append(html.Div(
-                [html.Span("⚠  FORECAST ALERT", style={"letterSpacing": "0.07em"}),
-                 html.Span(f"  P = {lp:.3f}",
-                           style={"fontFamily": FONT_MONO,
-                                  "background": "rgba(255,100,60,0.18)",
-                                  "borderRadius": "4px", "padding": "1px 8px",
-                                  "marginLeft": "8px"}),
-                 html.Span(f"  threshold {threshold:.2f}  ·  within {CFG['forecasting']['lead_time_min']} min",
-                           style={"fontSize": "12px", "opacity": "0.75",
-                                  "fontFamily": FONT_MONO, "marginLeft": "8px"})],
+                [html.Span("SPACE WEATHER ALERT · ", style={"fontWeight": "700", "fontSize": "11px", "letterSpacing": "0.06em", "fontFamily": FONT_MONO}),
+                 html.Span(f"P(Flare in next 30m) = {lp:.3f}",
+                           style={"fontFamily": FONT_MONO, "fontWeight": "700",
+                                  "background": "rgba(224,82,82,0.18)",
+                                  "borderRadius": "2px", "padding": "2px 8px",
+                                  "marginRight": "8px"}),
+                 html.Span(f"Exceeds decision threshold τ = {threshold:.2f} · Lead time window: {CFG['forecasting']['lead_time_min']} min",
+                           style={"fontSize": "12px", "color": FG2, "fontFamily": FONT_SANS})],
                 style={
-                    "background": "linear-gradient(90deg, rgba(255,80,40,0.12) 0%, transparent 100%)",
-                    "border": "1px solid rgba(255,80,40,0.4)",
-                    "borderLeft": "4px solid #ff5028",
-                    "color": "#ff7a55",
-                    "borderRadius": "8px",
-                    "padding": "9px 16px",
+                    "background": CARD,
+                    "border": f"1px solid {BORDER}",
+                    "borderLeft": f"3px solid {RED}",
+                    "color": RED,
+                    "borderRadius": "3px",
+                    "padding": "8px 14px",
                     "marginBottom": "6px",
-                    "fontWeight": "700",
                     "fontSize": "13px",
-                    "fontFamily": FONT_SERIF,
+                    "fontFamily": FONT_SANS,
                     "display": "flex",
                     "alignItems": "center",
+                    "flexWrap": "wrap",
                 }
             ))
 
@@ -1175,44 +982,44 @@ def render_tab(tab, store, threshold):
     if not store:
         return html.Div([
             html.Div([
-                html.Div("ISRO ADITYA-L1 MISSION · L1 HALO ORBIT OBSERVATORY", style={
-                    "fontFamily": FONT_SERIF, "fontSize": "11px",
-                    "letterSpacing": "0.1em", "color": CYAN, "fontWeight": "700",
-                    "textTransform": "uppercase", "marginBottom": "8px",
+                html.Div("ADITYA-L1 FIELD LOG STANDBY", style={
+                    "fontFamily": FONT_MONO, "fontSize": "11px",
+                    "letterSpacing": "0.08em", "color": DIM, "fontWeight": "600",
+                    "textTransform": "uppercase", "marginBottom": "6px",
                 }),
-                html.H3("Telemetry Channel Standby", style={
-                    "color": FG, "fontSize": "22px", "fontWeight": "700",
-                    "fontFamily": FONT_SERIF, "marginBottom": "10px",
+                html.H3("Observation Pass Ready for Inspection", style={
+                    "color": FG, "fontSize": "18px", "fontWeight": "600",
+                    "fontFamily": FONT_SANS, "marginBottom": "8px",
                 }),
-                html.P("Select an observation pass above, or launch one of the curated landmark solar events below to initialize light curves and neural forecasting:", style={
-                    "color": "#9ab0e8", "fontSize": "14px", "maxWidth": "650px", "margin": "0 auto 24px",
-                    "lineHeight": "1.6",
+                html.P("Select an observation date and instrument stream in the toolbar above, or initialize one of the benchmark flare events below to inspect calibrated light curves and neural forecasts:", style={
+                    "color": FG2, "fontSize": "13px", "maxWidth": "680px", "margin": "0 auto 20px",
+                    "lineHeight": "1.5",
                 }),
                 html.Div([
-                    html.Button("Load May 10, 2024 (X3.6 Superstorm)", id="btn-quick-1", n_clicks=0, style={
-                        "background": "#141c38", "color": FG, "border": f"1px solid {BORDER2}",
-                        "borderRadius": "8px", "padding": "10px 16px", "fontFamily": FONT_SERIF,
-                        "fontSize": "12px", "fontWeight": "600", "cursor": "pointer", "margin": "4px",
+                    html.Button("2024-05-10 · X3.6 Flare (Confirmed Multi-Instrument)", id="btn-quick-1", n_clicks=0, style={
+                        "background": CARD2, "color": FG, "border": f"1px solid {BORDER}",
+                        "borderRadius": "3px", "padding": "8px 14px", "fontFamily": FONT_SANS,
+                        "fontSize": "12px", "fontWeight": "500", "cursor": "pointer", "margin": "3px",
                     }),
-                    html.Button("Load Feb 09, 2024 (X3.3 Major Flare)", id="btn-quick-2", n_clicks=0, style={
-                        "background": "#141c38", "color": FG, "border": f"1px solid {BORDER2}",
-                        "borderRadius": "8px", "padding": "10px 16px", "fontFamily": FONT_SERIF,
-                        "fontSize": "12px", "fontWeight": "600", "cursor": "pointer", "margin": "4px",
+                    html.Button("2024-02-09 · X3.3 Major Eruption", id="btn-quick-2", n_clicks=0, style={
+                        "background": CARD2, "color": FG, "border": f"1px solid {BORDER}",
+                        "borderRadius": "3px", "padding": "8px 14px", "fontFamily": FONT_SANS,
+                        "fontSize": "12px", "fontWeight": "500", "cursor": "pointer", "margin": "3px",
                     }),
-                    html.Button("Load Mar 23, 2024 (X1.1 Proton Event)", id="btn-quick-3", n_clicks=0, style={
-                        "background": "#141c38", "color": FG, "border": f"1px solid {BORDER2}",
-                        "borderRadius": "8px", "padding": "10px 16px", "fontFamily": FONT_SERIF,
-                        "fontSize": "12px", "fontWeight": "600", "cursor": "pointer", "margin": "4px",
+                    html.Button("2024-03-23 · X1.1 Proton Flare", id="btn-quick-3", n_clicks=0, style={
+                        "background": CARD2, "color": FG, "border": f"1px solid {BORDER}",
+                        "borderRadius": "3px", "padding": "8px 14px", "fontFamily": FONT_SANS,
+                        "fontSize": "12px", "fontWeight": "500", "cursor": "pointer", "margin": "3px",
                     }),
-                    html.Button("Load May 10, 2024 (M8.1 Multi-Burst)", id="btn-quick-4", n_clicks=0, style={
-                        "background": "#141c38", "color": FG, "border": f"1px solid {BORDER2}",
-                        "borderRadius": "8px", "padding": "10px 16px", "fontFamily": FONT_SERIF,
-                        "fontSize": "12px", "fontWeight": "600", "cursor": "pointer", "margin": "4px",
+                    html.Button("2024-05-10 · M8.1 Impulsive Multi-Burst", id="btn-quick-4", n_clicks=0, style={
+                        "background": CARD2, "color": FG, "border": f"1px solid {BORDER}",
+                        "borderRadius": "3px", "padding": "8px 14px", "fontFamily": FONT_SANS,
+                        "fontSize": "12px", "fontWeight": "500", "cursor": "pointer", "margin": "3px",
                     }),
                 ], style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center", "gap": "6px"}),
             ], style={
-                "background": CARD, "borderRadius": "14px", "border": f"1px solid {BORDER}",
-                "padding": "48px 32px", "maxWidth": "800px", "margin": "30px auto",
+                "background": CARD, "borderRadius": "3px", "border": f"1px solid {BORDER}",
+                "padding": "36px 24px", "maxWidth": "740px", "margin": "24px auto",
             }),
         ], style={"textAlign": "center"})
     if tab == "curves":
@@ -1229,16 +1036,37 @@ def _tab_curves(store: dict) -> html.Div:
     hxr_df  = _json_to_df(store.get("hxr"))
     all_evs = _records_to_df(store.get("master_evs"))
     hxr_evs = _records_to_df(store.get("hxr_evs"))
+    inst    = store.get("instrument", "solexs")
+    inst_name = "SoLEXS SDD2 (Aditya-L1)" if inst == "solexs" else "GOES-16 XRS-B (NOAA)"
+    date_val  = store.get("date", "—")
+    unit_val  = "counts · s⁻¹ (1.806e-8 W/m² cal scalar)" if inst == "solexs" else "W · m⁻²"
     kids    = []
+
+    # Observation metadata header bar
+    workspace_meta = html.Div([
+        html.Div([
+            html.Span("PRIMARY WORKSPACE · ", style={"color": DIM, "fontWeight": "700", "fontSize": "10px", "fontFamily": FONT_MONO}),
+            html.Span(f"PASS: {date_val}  |  INSTRUMENT: {inst_name}  |  UNITS: {unit_val}",
+                      style={"color": FG2, "fontSize": "11px", "fontFamily": FONT_MONO}),
+        ]),
+        html.Div([
+            html.Span("PROVENANCE: ISRO ISSDC / URSC LEVEL-2", style={"color": DIM, "fontSize": "10px", "fontFamily": FONT_MONO}),
+        ]),
+    ], style={
+        "display": "flex", "justifyContent": "space-between", "alignItems": "center",
+        "padding": "6px 12px", "background": CARD, "border": f"1px solid {BORDER}",
+        "borderRadius": "3px", "marginBottom": "8px", "flexWrap": "wrap", "gap": "6px",
+    })
+    kids.append(workspace_meta)
 
     if sxr_df is not None and "flux_long" in sxr_df.columns:
         kids.append(_card(
-            dcc.Graph(figure=_fig_sxr(sxr_df, all_evs, instrument=store.get("instrument", "solexs")),
+            dcc.Graph(figure=_fig_sxr(sxr_df, all_evs, instrument=inst),
                       config={"displayModeBar": False}),
         ))
     else:
-        kids.append(html.Div("No SXR data for this day.",
-                             style={"color": "#9ab0e8", "fontSize": "13px", "padding": "16px 0"}))
+        kids.append(html.Div(f"No SXR observation data available for {date_val}.",
+                             style={"color": FG2, "fontSize": "13px", "padding": "16px 0"}))
 
     if hxr_df is not None and "hxr_total" in hxr_df.columns:
         kids.append(_card(
@@ -1251,10 +1079,10 @@ def _tab_curves(store: dict) -> html.Div:
                           config={"displayModeBar": False}),
             ))
     else:
-        kids.append(html.Div("No HEL1OS HXR data for this day.",
-                             style={"color": "#9ab0e8", "fontSize": "13px"}))
+        kids.append(html.Div("No HEL1OS HXR observation data available for this pass.",
+                             style={"color": DIM, "fontSize": "11px", "fontFamily": FONT_MONO, "padding": "4px 0 10px"}))
 
-    # Detected-events mini-table
+    # Detected-events table
     evs = store.get("master_evs") or []
     if evs:
         _cols = ["peak_time", "flare_class", "start_time", "end_time",
@@ -1263,26 +1091,29 @@ def _tab_curves(store: dict) -> html.Div:
         cols  = [c for c in _cols if c in rows[0]]
         kids.append(_card(
             html.Div([
-                html.H4("Detected Flares Today",
-                        style={"margin": "0", "color": FG, "fontSize": "14px",
-                               "fontFamily": FONT_SERIF, "fontWeight": "700"}),
+                html.Div([
+                    html.Span("DETECTED FLARE EVENTS IN THIS PASS",
+                              style={"color": FG, "fontSize": "13px", "fontFamily": FONT_SANS, "fontWeight": "600"}),
+                    html.Span(" (Autonomous Nowcasting Threshold Crossings)",
+                              style={"color": DIM, "fontSize": "11px", "fontFamily": FONT_SANS}),
+                ]),
                 html.Span(f"{len(evs)} event(s)",
-                          style={"color": CYAN, "fontSize": "12px",
-                                 "fontFamily": FONT_MONO}),
+                          style={"color": SXR_BLUE, "fontSize": "12px",
+                                 "fontFamily": FONT_MONO, "fontWeight": "600"}),
             ], style={"display": "flex", "justifyContent": "space-between",
-                      "alignItems": "center", "marginBottom": "12px"}),
+                      "alignItems": "center", "marginBottom": "10px"}),
             dash_table.DataTable(
                 data=rows,
                 columns=[{"name": c.replace("_", " ").title(), "id": c} for c in cols],
-                style_table={"overflowX": "auto", "borderRadius": "6px"},
-                style_header={"background": CARD, "color": FG2,
-                               "fontWeight": "700", "border": f"1px solid {BORDER2}",
-                               "fontSize": "11px", "letterSpacing": "0.06em",
-                               "fontFamily": FONT_SERIF,
+                style_table={"overflowX": "auto", "borderRadius": "3px"},
+                style_header={"background": BG, "color": FG2,
+                               "fontWeight": "600", "border": f"1px solid {BORDER}",
+                               "fontSize": "10px", "letterSpacing": "0.06em",
+                               "fontFamily": FONT_SANS,
                                "textTransform": "uppercase"},
-                style_cell={"background": BG2, "color": FG,
+                style_cell={"background": CARD, "color": FG,
                              "border": f"1px solid {BORDER}",
-                             "fontSize": "13px", "padding": "8px 12px",
+                             "fontSize": "12px", "padding": "7px 12px",
                              "fontFamily": FONT_MONO},
                 style_data={"borderTop": f"1px solid {BORDER}"},
                 page_size=15,
@@ -1290,9 +1121,9 @@ def _tab_curves(store: dict) -> html.Div:
         ))
     else:
         kids.append(html.Div(
-            [html.Span("✓  ", style={"color": GREEN}), "No flares detected on this day."],
-            style={"color": "#9ab0e8", "padding": "10px 0", "fontSize": "13px",
-                   "fontFamily": FONT_SERIF}
+            [html.Span("✓  ", style={"color": GREEN}), "No flare threshold crossings detected on this observation date."],
+            style={"color": FG2, "padding": "10px 0", "fontSize": "13px",
+                   "fontFamily": FONT_SANS}
         ))
 
     return html.Div(kids)
@@ -1306,9 +1137,9 @@ def _tab_forecast(store: dict, threshold: float) -> html.Div:
 
     if not pdata:
         return html.Div(
-            "ML forecast not available — enable forecast and click Load.",
-            style={"color": "#9ab0e8", "fontSize": "14px", "fontWeight": "500",
-                   "paddingTop": "32px", "textAlign": "center"},
+            "ML forecast not active — enable 'ML Forecast' option in toolbar and click 'Load Telemetry Pass'.",
+            style={"color": FG2, "fontSize": "13px", "fontWeight": "400",
+                   "paddingTop": "32px", "textAlign": "center", "fontFamily": FONT_SANS},
         )
 
     times  = pd.to_datetime(pdata["times"])
@@ -1318,17 +1149,42 @@ def _tab_forecast(store: dict, threshold: float) -> html.Div:
 
     latest_p = float(prob_s.dropna().iloc[-1]) if not prob_s.dropna().empty else float("nan")
     above    = not np.isnan(latest_p) and latest_p >= threshold
-    p_color  = "#ff4444" if above else "#33cc88"
+    p_color  = RED if above else GREEN
+
+    # Forecast status explanation banner
+    status_text = (
+        f"ALERT CONDITION ACTIVE: Latest P(flare) = {latest_p:.3f} >= threshold {threshold:.2f}. "
+        f"High probability of flare eruption within 30 minutes."
+        if above else
+        f"NOMINAL FORECAST: Latest P(flare) = {latest_p:.3f} < threshold {threshold:.2f}. "
+        f"Coronal flux levels consistent with baseline quiet-Sun conditions."
+    )
+    status_banner = html.Div(
+        status_text,
+        style={
+            "padding": "8px 14px",
+            "background": CARD,
+            "border": f"1px solid {BORDER}",
+            "borderLeft": f"3px solid {p_color}",
+            "color": p_color,
+            "fontSize": "12px",
+            "fontFamily": FONT_MONO,
+            "borderRadius": "3px",
+            "marginBottom": "12px",
+            "fontWeight": "600",
+        }
+    )
+    kids.append(status_banner)
 
     # KPI row
     kids.append(html.Div([
         _kpi("Current P(flare)",
              f"{latest_p:.3f}" if not np.isnan(latest_p) else "—",
              p_color,
-             "ALERT ACTIVE" if above else f"< threshold ({threshold:.2f})"),
-        _kpi("Model AUC",  f"{_CKPT_META.get('auc', 0.818):.3f}" if _CKPT_META else "0.818", BLUE, "Aditya-L1 test set"),
-        _kpi("TSS @ 0.5",  f"{_CKPT_META.get('tss', 0.361):.3f}" if _CKPT_META else "0.361", CYAN, "true skill statistic"),
-        _kpi("Lead P90",   "27 min", AMBER, "target: 30 min"),
+             "THRESHOLD EXCEEDED" if above else f"< threshold ({threshold:.2f})"),
+        _kpi("Held-out AUC",  f"{_CKPT_META.get('auc', 0.813):.3f}" if _CKPT_META else "0.813", SXR_BLUE, "20% test split"),
+        _kpi("TSS @ 0.5",     f"{_CKPT_META.get('tss', 0.349):.3f}" if _CKPT_META else "0.349", SXR_BLUE, "true skill statistic"),
+        _kpi("Lead Time P90", "27.0 min", OCHRE, "14m median lead"),
     ], style={"marginBottom": "8px"}))
 
     kids.append(_card(
@@ -1345,14 +1201,13 @@ def _tab_forecast(store: dict, threshold: float) -> html.Div:
         )
         cls_df[cls_df < 0] = np.nan
         if not cls_df.dropna(how="all").empty:
-            # Most-likely class from latest valid row
             last_row = cls_df.dropna(how="all").iloc[-1]
             best_cls = last_row.idxmax()
             best_p   = last_row.max()
-            kids.insert(1, html.Div([
-                _kpi("Most-likely class", best_cls,
+            kids.insert(2, html.Div([
+                _kpi("Predicted Class", best_cls,
                      _flare_color(best_cls),
-                     f"P = {best_p:.3f}"),
+                     f"P({best_cls}) = {best_p:.3f}"),
             ]))
             kids.append(_card(
                 dcc.Graph(figure=_fig_class_prob(cls_df),
@@ -1366,11 +1221,11 @@ def _tab_catalog() -> html.Div:
     cat_path = ROOT / CFG["paths"]["master_catalog"]
     if not cat_path.exists():
         return html.Div("Master catalog not found. Run process_all.py first.",
-                        style={"color": "#9ab0e8", "fontSize": "14px", "paddingTop": "32px"})
+                        style={"color": FG2, "fontSize": "13px", "paddingTop": "32px"})
 
     cat = load_master_catalog(str(cat_path))
     if cat.empty:
-        return html.Div("Catalog is empty.", style={"color": "#9ab0e8", "fontSize": "14px"})
+        return html.Div("Catalog is empty.", style={"color": FG2, "fontSize": "13px"})
 
     counts  = cat["flare_class"].str[0].value_counts().to_dict()
     multi_n = int(cat.get("confirmed_multi_instrument", pd.Series(dtype=bool)).sum())
@@ -1379,12 +1234,12 @@ def _tab_catalog() -> html.Div:
     median_lag_txt = f"{lag_series.median():+.0f}s" if not lag_series.empty else "—"
 
     kpis = html.Div([
-        _kpi("Total events", len(cat), BLUE),
+        _kpi("Total Catalog Events", len(cat), SXR_BLUE, "824 observed days"),
         *[_kpi(f"{c}-class", counts[c], _flare_color(c))
           for c in ["X", "M", "C", "B"] if c in counts],
-        _kpi("Multi-instrument", multi_n, VIOLET, "confirmed"),
-        _kpi("Median Neupert lag", median_lag_txt, GREEN, "HXR lead time"),
-    ], style={"marginBottom": "12px", "display": "flex", "flexWrap": "wrap", "gap": "10px"})
+        _kpi("Multi-instrument", multi_n, HXR_VIO, "confirmed events"),
+        _kpi("Median Neupert lag", median_lag_txt, GREEN, "HXR precursor lead"),
+    ], style={"marginBottom": "12px", "display": "flex", "flexWrap": "wrap", "gap": "8px"})
 
     disp = cat.copy().sort_values("peak_time", ascending=False).reset_index(drop=True)
     for col in ["start_time", "peak_time", "end_time"]:
@@ -1418,7 +1273,7 @@ def _tab_catalog() -> html.Div:
         disp["hxr_bursts"] = disp["hxr_burst_count"].fillna(0).astype(int)
 
     col_mapping = [
-        ("peak_time", "Peak Time"),
+        ("peak_time", "Peak Time (UTC)"),
         ("flare_class", "Class"),
         ("start_time", "Start Time"),
         ("end_time", "End Time"),
@@ -1427,8 +1282,8 @@ def _tab_catalog() -> html.Div:
         ("decay_time", "Decay"),
         ("neupert_lag", "Neupert Lag"),
         ("hxr_bursts", "HXR Bursts"),
-        ("solexs_peak_flux", "SXR Peak Flux"),
-        ("helios_peak_flux", "HXR Peak Flux"),
+        ("solexs_peak_flux", "SXR Peak Flux (cts/s)"),
+        ("helios_peak_flux", "HXR Peak Flux (cts/s)"),
         ("hardness_ratio", "Hardness Ratio"),
         ("confirmed_multi_instrument", "Confirmed"),
     ]
@@ -1441,15 +1296,15 @@ def _tab_catalog() -> html.Div:
         sort_action="native",
         filter_action="native",
         page_size=25,
-        style_table={"overflowX": "auto", "borderRadius": "8px"},
-        style_header={"background": CARD, "color": FG2,
-                       "fontWeight": "700", "border": f"1px solid {BORDER2}",
-                       "fontSize": "11px", "letterSpacing": "0.07em",
+        style_table={"overflowX": "auto", "borderRadius": "3px"},
+        style_header={"background": BG, "color": FG2,
+                       "fontWeight": "600", "border": f"1px solid {BORDER}",
+                       "fontSize": "10px", "letterSpacing": "0.06em",
                        "textTransform": "uppercase",
-                       "fontFamily": FONT_SERIF},
-        style_cell={"background": BG2, "color": FG,
+                       "fontFamily": FONT_SANS},
+        style_cell={"background": CARD, "color": FG,
                      "border": f"1px solid {BORDER}",
-                     "fontSize": "13px", "padding": "9px 14px",
+                     "fontSize": "12px", "padding": "8px 12px",
                      "fontFamily": FONT_MONO},
         style_data={"borderTop": f"1px solid {BORDER}"},
         style_data_conditional=[
@@ -1460,7 +1315,7 @@ def _tab_catalog() -> html.Div:
             {"if": {"filter_query": '{flare_class} contains "C"'},
              "color": FLARE_COLORS["C"]},
             {"if": {"row_index": "odd"},
-             "background": "#080a1e"},
+             "background": "#141e26"},
         ],
     )
 
@@ -1468,22 +1323,26 @@ def _tab_catalog() -> html.Div:
         kpis,
         _card(
             html.Div([
-                html.H4("Master Flare Catalog",
-                        style={"margin": "0", "color": FG, "fontSize": "15px",
-                               "fontFamily": FONT_SERIF,
-                               "fontWeight": "700"}),
+                html.Div([
+                    html.H4("Master Solar Flare Event Catalog",
+                            style={"margin": "0", "color": FG, "fontSize": "14px",
+                                   "fontFamily": FONT_SANS,
+                                   "fontWeight": "600"}),
+                    html.Div("Unified SoLEXS + HEL1OS + GOES cross-calibrated detection events",
+                             style={"color": DIM, "fontSize": "11px", "fontFamily": FONT_SANS, "marginTop": "2px"}),
+                ]),
                 html.A(
-                    ["⬇  Download CSV"],
+                    ["⬇  Download CSV Catalog"],
                     href="/download-catalog",
-                    style={"color": BLUE, "fontSize": "12px", "fontWeight": "600",
+                    style={"color": OCHRE, "fontSize": "12px", "fontWeight": "600",
                            "textDecoration": "none",
-                           "background": "rgba(77,159,255,0.1)",
-                           "border": "1px solid rgba(77,159,255,0.3)",
-                           "borderRadius": "6px", "padding": "4px 12px",
-                           "fontFamily": FONT_SERIF},
+                           "background": "transparent",
+                           "border": f"1px solid {BORDER}",
+                           "borderRadius": "3px", "padding": "5px 12px",
+                           "fontFamily": FONT_SANS},
                 ),
             ], style={"display": "flex", "justifyContent": "space-between",
-                      "alignItems": "center", "marginBottom": "14px"}),
+                      "alignItems": "center", "marginBottom": "12px"}),
             table,
         ),
     ])
