@@ -147,36 +147,39 @@ def _card(*children, **extra_style):
     return html.Div(children, style=style)
 
 
-def _kpi(label_text: str, value, color: str = BLUE, sub: str = ""):
+def _kpi(label_text: str, value, color: str = BLUE, sub: str = "", style: dict = None):
     """Observatory field log KPI metric tile with tabular mono typography."""
+    base_style = {
+        "background": CARD,
+        "borderRadius": "3px",
+        "padding": "12px 14px",
+        "border": f"1px solid {BORDER}",
+        "display": "inline-block",
+        "minWidth": "110px",
+        "marginRight": "10px",
+        "marginBottom": "10px",
+        "verticalAlign": "top",
+    }
+    if style:
+        base_style.update(style)
     return html.Div([
         html.Div(
             label_text.upper(),
             style={"color": DIM, "fontSize": "10px", "letterSpacing": "0.08em",
                    "fontWeight": "600", "marginBottom": "6px",
-                   "fontFamily": FONT_SANS},
+                   "fontFamily": FONT_SANS, "whiteSpace": "nowrap", "overflow": "hidden", "textOverflow": "ellipsis"},
         ),
         html.Div(
             str(value),
-            style={"fontSize": "1.75em", "fontWeight": "700", "color": color,
-                   "lineHeight": "1.1", "fontFamily": FONT_MONO},
+            style={"fontSize": "1.65em", "fontWeight": "700", "color": color,
+                   "lineHeight": "1.1", "fontFamily": FONT_MONO, "whiteSpace": "nowrap"},
         ),
         html.Div(
             sub,
             style={"color": FG2, "fontSize": "11px", "fontWeight": "400",
-                   "marginTop": "4px", "fontFamily": FONT_SANS}
+                   "marginTop": "4px", "fontFamily": FONT_SANS, "whiteSpace": "nowrap", "overflow": "hidden", "textOverflow": "ellipsis"}
         ) if sub else html.Div(),
-    ], style={
-        "background": CARD,
-        "borderRadius": "3px",
-        "padding": "12px 16px",
-        "border": f"1px solid {BORDER}",
-        "display": "inline-block",
-        "minWidth": "140px",
-        "marginRight": "10px",
-        "marginBottom": "10px",
-        "verticalAlign": "top",
-    })
+    ], style=base_style)
 
 
 # ── Plots ─────────────────────────────────────────────────────────────────────
@@ -1177,21 +1180,19 @@ def _tab_forecast(store: dict, threshold: float) -> html.Div:
     kids.append(status_banner)
 
     # KPI row
-    kids.append(html.Div([
+    kpi_tile_style = {"minWidth": "0", "marginRight": "0", "marginBottom": "0"}
+    kpis = [
         _kpi("Current P(flare)",
              f"{latest_p:.3f}" if not np.isnan(latest_p) else "—",
              p_color,
-             "THRESHOLD EXCEEDED" if above else f"< threshold ({threshold:.2f})"),
-        _kpi("Held-out AUC",  f"{_CKPT_META.get('auc', 0.813):.3f}" if _CKPT_META else "0.813", SXR_BLUE, "20% test split"),
-        _kpi("TSS @ 0.5",     f"{_CKPT_META.get('tss', 0.349):.3f}" if _CKPT_META else "0.349", SXR_BLUE, "true skill statistic"),
-        _kpi("Lead Time P90", "27.0 min", OCHRE, "14m median lead"),
-    ], style={"marginBottom": "8px"}))
+             "THRESHOLD EXCEEDED" if above else f"< threshold ({threshold:.2f})",
+             style=kpi_tile_style),
+        _kpi("Held-out AUC",  f"{_CKPT_META.get('auc', 0.813):.3f}" if _CKPT_META else "0.813", SXR_BLUE, "20% test split", style=kpi_tile_style),
+        _kpi("TSS @ 0.5",     f"{_CKPT_META.get('tss', 0.349):.3f}" if _CKPT_META else "0.349", SXR_BLUE, "true skill statistic", style=kpi_tile_style),
+        _kpi("Lead Time P90", "27.0 min", OCHRE, "14m median lead", style=kpi_tile_style),
+    ]
 
-    kids.append(_card(
-        dcc.Graph(figure=_fig_probability(prob_s, threshold, all_ev),
-                  config={"displayModeBar": True, "displaylogo": False}),
-    ))
-
+    cls_df = None
     if cdata:
         cls_times = pd.to_datetime(cdata["_times"])
         cls_cols  = [c for c in cdata if c != "_times"]
@@ -1204,15 +1205,34 @@ def _tab_forecast(store: dict, threshold: float) -> html.Div:
             last_row = cls_df.dropna(how="all").iloc[-1]
             best_cls = last_row.idxmax()
             best_p   = last_row.max()
-            kids.insert(2, html.Div([
+            kpis.append(
                 _kpi("Predicted Class", best_cls,
                      _flare_color(best_cls),
-                     f"P({best_cls}) = {best_p:.3f}"),
-            ]))
-            kids.append(_card(
-                dcc.Graph(figure=_fig_class_prob(cls_df),
-                          config={"displayModeBar": False}),
-            ))
+                     f"P({best_cls}) = {best_p:.3f}",
+                     style=kpi_tile_style)
+            )
+
+    kids.append(html.Div(
+        kpis,
+        style={
+            "display": "grid",
+            "gridTemplateColumns": f"repeat({len(kpis)}, minmax(0, 1fr))",
+            "gap": "10px",
+            "marginBottom": "12px",
+            "width": "100%",
+        }
+    ))
+
+    kids.append(_card(
+        dcc.Graph(figure=_fig_probability(prob_s, threshold, all_ev),
+                  config={"displayModeBar": True, "displaylogo": False}),
+    ))
+
+    if cls_df is not None and not cls_df.dropna(how="all").empty:
+        kids.append(_card(
+            dcc.Graph(figure=_fig_class_prob(cls_df),
+                      config={"displayModeBar": False}),
+        ))
 
     return html.Div(kids)
 

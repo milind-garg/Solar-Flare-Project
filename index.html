@@ -56,7 +56,9 @@
     /* ── Masthead ── */
     .masthead {
       border-bottom: 1px solid var(--border);
-      background: var(--bg-base);
+      background: rgba(16, 24, 32, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -138,52 +140,99 @@
       border-color: var(--solar-ochre);
     }
 
+    /* ── Cinematic Space Observatory Background ── */
+    .cosmos-bg-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .cosmos-solar-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('assets/solar_hero_bg.jpg');
+      background-size: cover;
+      background-position: center 25%;
+      opacity: 0.44;
+      filter: saturate(1.18) contrast(1.12) brightness(0.88);
+    }
+    .cosmos-vignette {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 95% 75% at 50% 35%, rgba(16, 24, 32, 0.2) 0%, rgba(16, 24, 32, 0.72) 60%, var(--bg-base) 96%),
+        linear-gradient(180deg, rgba(16, 24, 32, 0.45) 0%, rgba(16, 24, 32, 0.15) 30%, rgba(16, 24, 32, 0.8) 75%, var(--bg-base) 100%);
+    }
+
     /* ── Hero Section ── */
     .hero {
-      padding: 56px 0 44px;
+      position: relative;
+      z-index: 10;
+      padding: 72px 0 64px;
+      min-height: calc(100vh - 65px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-bottom: 1px solid var(--border);
     }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 40px;
-      align-items: start;
+    .hero-card {
+      background: rgba(23, 35, 43, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(45, 64, 78, 0.65);
+      border-radius: 8px;
+      padding: 44px 48px;
+      margin: 0 auto;
+      max-width: 820px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
     }
     .hero-pill {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       border: 1px solid var(--border);
-      padding: 3px 8px;
-      border-radius: 2px;
-      margin-bottom: 16px;
-      background: var(--bg-surface);
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      background: rgba(16, 24, 32, 0.6);
     }
     .hero-h1 {
-      font-size: clamp(2rem, 3.2vw, 2.75rem);
-      line-height: 1.15;
+      font-size: clamp(2.1rem, 3.4vw, 2.85rem);
+      line-height: 1.18;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text-primary);
       margin-bottom: 16px;
     }
     .hero-desc {
-      font-size: 15px;
+      font-size: 14.5px;
       line-height: 1.65;
       color: var(--text-secondary);
-      margin-bottom: 28px;
-      max-width: 580px;
+      margin: 0 auto 28px;
+      max-width: 620px;
     }
     .hero-actions {
       display: flex;
+      justify-content: center;
+      align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
     .btn-primary {
       display: inline-flex;
@@ -191,65 +240,71 @@
       gap: 8px;
       background: var(--solar-ochre);
       color: #101820;
-      padding: 9px 18px;
-      border-radius: 3px;
+      padding: 10px 20px;
+      border-radius: 4px;
       font-size: 13px;
       font-weight: 600;
-      transition: opacity 0.15s ease;
+      transition: opacity 0.15s ease, transform 0.15s ease;
     }
-    .btn-primary:hover { opacity: 0.92; }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
     .btn-outline {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: transparent;
+      background: rgba(16, 24, 32, 0.5);
       color: var(--text-primary);
       border: 1px solid var(--border);
-      padding: 9px 16px;
-      border-radius: 3px;
+      padding: 10px 18px;
+      border-radius: 4px;
       font-size: 13px;
       font-weight: 500;
-      transition: background 0.15s ease, border-color 0.15s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
     }
     .btn-outline:hover {
       background: var(--bg-surface);
       border-color: var(--border-light);
+      transform: translateY(-1px);
     }
 
     /* Curated benchmark links */
     .hero-benchmarks {
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
+      border-top: 1px solid rgba(45, 64, 78, 0.5);
+      padding-top: 24px;
     }
     .benchmark-label {
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 14px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
+      text-align: center;
     }
     .benchmark-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-width: 620px;
+      margin: 0 auto;
     }
     .bench-chip {
-      background: var(--bg-surface);
+      background: rgba(16, 24, 32, 0.7);
       border: 1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 3px;
+      padding: 8px 14px;
+      border-radius: 4px;
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-secondary);
-      transition: border-color 0.15s ease, color 0.15s ease;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: flex-start;
+      gap: 8px;
     }
     .bench-chip:hover {
       border-color: var(--solar-ochre);
       color: var(--text-primary);
+      background: rgba(30, 46, 56, 0.85);
     }
     .badge-x { color: var(--alert-red); font-weight: 700; }
     .badge-m { color: var(--solar-ochre); font-weight: 700; }
@@ -325,6 +380,8 @@
 
     /* ── Evidence Row ── */
     .evidence-section {
+      position: relative;
+      z-index: 10;
       border-bottom: 1px solid var(--border);
       background: var(--bg-surface);
     }
@@ -362,8 +419,11 @@
 
     /* ── Sections Common ── */
     .section-wrap {
+      position: relative;
+      z-index: 10;
       padding: 56px 0;
       border-bottom: 1px solid var(--border);
+      background: var(--bg-base);
     }
     .section-header {
       margin-bottom: 36px;
@@ -587,6 +647,8 @@
 
     /* ── Footer ── */
     .footer {
+      position: relative;
+      z-index: 10;
       padding: 36px 0;
       background: var(--bg-base);
       font-size: 12px;
@@ -602,13 +664,16 @@
     }
 
     @media (max-width: 900px) {
-      .hero-grid, .neupert-grid, .instrument-grid { grid-template-columns: 1fr; }
+      .neupert-grid, .instrument-grid { grid-template-columns: 1fr; }
       .evidence-grid { grid-template-columns: 1fr 1fr; }
       .evidence-item:nth-child(2) { border-right: none; }
       .method-workflow { grid-template-columns: 1fr 1fr; }
       .nav-links { display: none; }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
+      .hero { padding: 48px 0; }
+      .hero-card { padding: 32px 20px; }
+      .benchmark-chips { grid-template-columns: 1fr; }
       .evidence-grid { grid-template-columns: 1fr; }
       .evidence-item { border-right: none; border-bottom: 1px solid var(--border); }
       .evidence-item:last-child { border-bottom: none; }
@@ -618,6 +683,12 @@
 </head>
 <body>
 
+  <!-- ── Cinematic Space Observatory Background ── -->
+  <div class="cosmos-bg-fixed" aria-hidden="true">
+    <div class="cosmos-solar-img"></div>
+    <div class="cosmos-vignette"></div>
+  </div>
+
   <!-- ── Masthead ── -->
   <header class="masthead">
     <div class="container masthead-inner">
@@ -625,7 +696,7 @@
         <img src="assets/logo.png" class="brand-logo" alt="Aditya-L1 Mission Emblem" />
         <div>
           <div class="brand-title">Aditya-L1 Solar Flare Observatory</div>
-          <div class="brand-subtitle">ISRO PS-15 Research & Operations Portal</div>
+          <div class="brand-subtitle">ISRO Research & Operations Portal</div>
         </div>
       </a>
 
@@ -648,8 +719,8 @@
 
   <!-- ── Hero Section ── -->
   <section class="hero">
-    <div class="container hero-grid">
-      <div>
+    <div class="container">
+      <div class="hero-card">
         <div class="hero-pill">
           <span>Aditya-L1 · Sun-Earth L1 Halo Orbit (1.5M km)</span>
         </div>
@@ -663,7 +734,7 @@
         <div class="hero-actions">
           <a class="btn-primary" href="/dashboard/">
             <span>Explore Observations</span>
-            <i data-lucide="layout-dashboard" style="width:14px; height:14px;"></i>
+            <i data-lucide="layout-grid" style="width:14px; height:14px;"></i>
           </a>
           <a class="btn-outline" href="#method">
             <span>How It Works</span>
@@ -690,30 +761,6 @@
               <span class="badge-m">M8.1</span>
               <span>2024-05-10 (Multi-Burst)</span>
             </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scientific Image Viewport -->
-      <div>
-        <div class="scientific-viewer">
-          <div class="viewer-bar">
-            <span>Solar Active Region Corona</span>
-            <span>[Illustrative Reference]</span>
-          </div>
-          <div class="viewer-canvas">
-            <img id="solarImg" class="filter-composite" src="assets/solar_hero.jpg" alt="Solar Active Region Context (SDO/AIA Extreme Ultraviolet Composite)" />
-          </div>
-          <div class="viewer-controls">
-            <div class="band-btns">
-              <button class="band-btn active" onclick="setBand('composite', this)">Composite</button>
-              <button class="band-btn" onclick="setBand('sxr', this)">SXR 1–8 Å View</button>
-              <button class="band-btn" onclick="setBand('hxr', this)">HXR 10–160 keV View</button>
-            </div>
-            <span style="color:var(--text-muted); font-size:10px;">AR 3664 Active Complex</span>
-          </div>
-          <div class="viewer-caption">
-            <strong>Context Observation:</strong> SDO/AIA extreme ultraviolet imagery (193 Å / 131 Å) of active region AR 3664 during the May 2024 eruptive sequence. Provided as reference coronal context for plasma heating; calibrated irradiance measurements are derived directly from Aditya-L1 SoLEXS & HEL1OS telemetry streams.
           </div>
         </div>
       </div>
@@ -798,6 +845,30 @@
             <tr><td>Precursor Lead</td><td>Median +134 seconds lead before SXR peak</td></tr>
             <tr><td>Physical Role</td><td>Impulsive trigger & Neupert precursor detection</td></tr>
           </table>
+        </div>
+      </div>
+
+      <!-- Coronal Context Observation (Multi-Spectral Reference) -->
+      <div style="margin-top: 24px;">
+        <div class="scientific-viewer">
+          <div class="viewer-bar">
+            <span>Solar Active Region Corona · Multi-Spectral Reference</span>
+            <span>[Illustrative Context]</span>
+          </div>
+          <div class="viewer-canvas" style="height: 320px;">
+            <img id="solarImg" class="filter-composite" src="assets/solar_hero.jpg" alt="Solar Active Region Context (SDO/AIA Extreme Ultraviolet Composite)" />
+          </div>
+          <div class="viewer-controls">
+            <div class="band-btns">
+              <button class="band-btn active" onclick="setBand('composite', this)">Composite</button>
+              <button class="band-btn" onclick="setBand('sxr', this)">SXR 1–8 Å View</button>
+              <button class="band-btn" onclick="setBand('hxr', this)">HXR 10–160 keV View</button>
+            </div>
+            <span style="color:var(--text-muted); font-size:10px;">AR 3664 Active Complex</span>
+          </div>
+          <div class="viewer-caption">
+            <strong>Context Observation:</strong> SDO/AIA extreme ultraviolet imagery (193 Å / 131 Å) of active region AR 3664 during the May 2024 eruptive sequence. Provided as reference coronal context for plasma heating; calibrated irradiance measurements are derived directly from Aditya-L1 SoLEXS & HEL1OS telemetry streams.
+          </div>
         </div>
       </div>
     </div>
@@ -981,7 +1052,7 @@
       <div style="display:flex; align-items:center; gap:10px;">
         <img src="assets/logo.png" style="width:22px; height:22px; border-radius:2px; border:1px solid var(--border);" alt="Aditya-L1" />
         <span style="color:var(--text-primary); font-weight:600;">Aditya-L1 Solar Flare Observatory</span>
-        <span>· ISRO PS-15 Research Console</span>
+        <span>· ISRO Research Console</span>
       </div>
       <div>
         Data: URSC (SoLEXS) · PRL (HEL1OS) · NOAA/NCEI (GOES-16 XRS) · Software v1.2
